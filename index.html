@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine? 💕</title>
+    <title>Will You Be My Valentine Ms. Roy? 💕</title>
     <style>
         * {
             margin: 0;
@@ -134,14 +134,74 @@
             height: auto;
             border-radius: 15px;
         }
+
+        /* Floating question marks */
+        .question-mark {
+            position: absolute;
+            font-size: 40px;
+            color: #e91e63;
+            font-weight: bold;
+            animation: float-question 8s ease-in-out infinite;
+            opacity: 0.7;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        @keyframes float-question {
+            0%, 100% {
+                transform: translateY(0) rotate(-10deg);
+            }
+            25% {
+                transform: translateY(-30px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(-5deg);
+            }
+            75% {
+                transform: translateY(-25px) rotate(10deg);
+            }
+        }
+
+        /* Burst hearts for Yes click */
+        .burst-heart-yes {
+            position: fixed;
+            font-size: 35px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: burst-explode 1.5s ease-out forwards;
+        }
+
+        @keyframes burst-explode {
+            0% {
+                transform: translate(0, 0) scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(2) rotate(var(--rotate));
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="hearts-container" id="heartsContainer"></div>
     
+    <!-- Floating Question Marks -->
+    <div class="question-mark" style="left: 10%; top: 15%; animation-delay: 0s;">?</div>
+    <div class="question-mark" style="left: 85%; top: 20%; animation-delay: 1s;">?</div>
+    <div class="question-mark" style="left: 15%; top: 70%; animation-delay: 2s;">?</div>
+    <div class="question-mark" style="left: 80%; top: 65%; animation-delay: 1.5s;">?</div>
+    <div class="question-mark" style="left: 50%; top: 10%; animation-delay: 3s;">?</div>
+    <div class="question-mark" style="left: 25%; top: 85%; animation-delay: 2.5s;">?</div>
+    <div class="question-mark" style="left: 70%; top: 85%; animation-delay: 0.5s;">?</div>
+    <div class="question-mark" style="left: 90%; top: 45%; animation-delay: 4s;">?</div>
+    
     <div class="container">
         <h1>💕 Happy Valentine's Day! 💕</h1>
-        <p class="question">Will you be my Valentine?</p>
+        <p class="question">Will you be my Valentine Ms. Roy?</p>
         
         <div class="buttons">
             <button class="btn btn-yes" onclick="sayYes()">Yes! 💖</button>
@@ -191,6 +251,9 @@
 
         // When Yes is clicked
         function sayYes() {
+            // Create MASSIVE heart burst all over the screen!
+            createMassiveHeartBurst();
+            
             // Create confetti effect
             for (let i = 0; i < 50; i++) {
                 createConfetti();
@@ -199,7 +262,44 @@
             // Redirect after a short delay
             setTimeout(() => {
                 window.location.href = 'valentine.html';
-            }, 1000);
+            }, 2000);
+        }
+
+        // Create massive heart burst all over screen
+        function createMassiveHeartBurst() {
+            const hearts = ['💖', '💕', '💗', '💓', '💝', '❤️', '💞', '💘', '💟'];
+            const burstCount = 100; // 100 hearts bursting everywhere!
+            
+            for (let i = 0; i < burstCount; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('burst-heart-yes');
+                    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                    
+                    // Random starting position anywhere on screen
+                    const startX = Math.random() * window.innerWidth;
+                    const startY = Math.random() * window.innerHeight;
+                    
+                    // Random direction and distance
+                    const angle = Math.random() * 360;
+                    const distance = 200 + Math.random() * 300;
+                    const tx = Math.cos(angle * Math.PI / 180) * distance;
+                    const ty = Math.sin(angle * Math.PI / 180) * distance;
+                    const rotate = Math.random() * 720 - 360;
+                    
+                    heart.style.left = startX + 'px';
+                    heart.style.top = startY + 'px';
+                    heart.style.setProperty('--tx', tx + 'px');
+                    heart.style.setProperty('--ty', ty + 'px');
+                    heart.style.setProperty('--rotate', rotate + 'deg');
+                    
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 1500);
+                }, i * 15); // Stagger the burst
+            }
         }
 
         function createConfetti() {
